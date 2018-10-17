@@ -5,7 +5,11 @@
  * For most case, your module name will be the parent path (Ex: /home/abc, /home/xxxx)
  */
 
-Route::get('/home/index', "App\Modules\Home\Controllers\Home@index");
-Route::get('/home/view', "App\Modules\Home\Controllers\Home@view");
-Route::get('/home/test_insert_model', "App\Modules\Home\Controllers\Home@test_insert_model");
-Route::get('/home/get_model', "App\Modules\Home\Controllers\Home@get_model");
+$module_namespace = "App\Modules\Home\Controllers";
+
+Route::prefix('/home')->namespace($module_namespace)->group(function () {
+    Route::get('/index', "Home@index");
+    Route::get('/view', "Home@view");
+    Route::get('/test_insert_model', "Home@test_insert_model");
+    Route::get('/get_model', "Home@get_model");
+});

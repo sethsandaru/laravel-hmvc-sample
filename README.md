@@ -4,12 +4,18 @@ A sample project, building and using HMVC structure for Laravel 5.x.
 ## What is HMVC?
 You can find out here: [HMVC - WIKI](https://en.wikipedia.org/wiki/Hierarchical_model%E2%80%93view%E2%80%93controller)
 
+Key advantages (M.O.R.E): 
+- Modularization: Reduction of dependencies between the disparate parts of the application.
+- Organization: Having a folder for each of the relevant triads makes for a lighter work load.
+- Reusability: By nature of the design it is easy to reuse nearly every piece of code.
+- Extendibility: Makes the application more extensible without sacrificing ease of maintenance.
+
 ## Laravel HMVC Structure - this project
 - Top - Base MVC
-    - Module 1 MVC
-    - Module 2 MVC
-    - ...
-    - Module n MVC
+- Module 1 MVC
+- Module 2 MVC
+- ...
+- Module n MVC
 
 ## Module Structure
 - Module
@@ -23,29 +29,27 @@ You can find out here: [HMVC - WIKI](https://en.wikipedia.org/wiki/Hierarchical_
     - Models: your models here.
     - Views: your view file here.
 - routes.php: routes of this module.
-- <ModuleName>ServiceProvider.php: Register service for Laravel.
+
+You don't need to have full structure to work properly. Create the one that you need to use.
 
 ## How to create a new module?
-1. Copy the sample module folder and rename it to your module name (Ex: Administration)
-2. Change `HomeServiceProvider.php` to `<ModuleName>ServiceProvider.php`, also change class name too.
-3. Open `<ModuleName>ServiceProvider.php`, change `$moduleName` to your module name (lowercase)
-4. Open `config/app.php`, find `providers` property.
-5. Insert your provider class into `providers` (Ex: `App\Modules\Home\HomeServiceProvider::class`), insert at the end of this array.
-6. Test your module now :D
+1. Create your module folder inside `app/Modules`
+2. Inside your module folder, create folder that you need like the structure above (Controllers, Views,...)
+3. Test your module.
 
 ## How to get (View, Language, Config)?
-Remember the `$moduleName`? We will use it to load views, langs,...
-For example, my `$moduleName` is **home**.
+Module folder name is the alias name to let us load views, language text,...     
+Example: I have **Home** module.
 
 ### Load view
 We need to insert module alias in the beginning like this:
 ```php
-return view('home::home.view', $arrData);
+return view('Home::home.view', $arrData);
 ```
 
 ### Get language (translation) text
 ```php
-trans('home::home.hello'); // Hello
+trans('Home::home.hello'); // Hello
 ```
 
 ### Config
@@ -55,17 +59,18 @@ To deal with your own config, we have 2 steps:
 Just create a config file (Laravel format) in `<ModulePath>/Configs`.
 
 #### 2. Register Config
-1. Open `<ModuleName>ServiceProvider.php`
-2. In `register` method, you need to call this method to register your own config file:
+1. Open `HMVCServiceProvider.php`
+2. In `$configFile` array, add your config file and alias in here:
 ```php
-    // usage
-    $this->mergeConfigFrom('PATH', 'ALIAS');
+private $configFile = [
+    // alias => config file location/path
+    'homeconfig' => 'Home/Configs/homeconfig.php',
     
-    // example
-    $this->mergeConfigFrom(__DIR__ . '/Configs/homeconfig.php', 'homeconfig');
+    // more here
+];
 ``` 
 
-#### 3. Get Config Value
+#### Get Config Value
 Just like normal config, you can get your config via your alias like this:
 ```php
 config('homeconfig.text'); // get 'text' in homeconfig
@@ -76,8 +81,8 @@ config('homeconfig.text'); // get 'text' in homeconfig
 ### How it works?
 When you run `php artisan migrate`, it will run like this:
 ```php
-- Base/Core (database/migrations)
-- Thought modules [priority by index of providers (config/app.php)]
+- Base/Core (database/migrations) first
+- Thought each module
     - Module 1
     - Module 2
     - ...
@@ -88,8 +93,7 @@ When you run `php artisan migrate`, it will run like this:
 Just create migration file (Laravel format) in `<ModulePath>/Migrations`.
 
 Note:
-- Filename must be: `yyyy_MM_dd_hhmmss_class_name_here.php`
-- And the class name, need to define as **Pascal Case** from filename: ClassNameHere
+- Filename must be: `yyyy_MM_dd_hhmmss_class_name_here.php` (follow Laravel format)
 
 ## Final
 I'll create a laravel package (console) to create a module later :D

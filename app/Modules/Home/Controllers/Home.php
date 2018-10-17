@@ -18,7 +18,7 @@ class Home extends Controller
     function index() {
         //App::setLocale('vi'); test locate
         echo "Text Config: " . config('homeconfig.text') . " <br />"; // ok
-        echo "Text Language: " . trans('home::home.hello') . " <br />"; // ok
+        echo "Text Language: " . trans('Home::home.hello') . " <br />"; // ok
 
         (new HomeLibrary())->test(); // test lib
 
@@ -26,7 +26,7 @@ class Home extends Controller
     }
 
     function view() {
-        return view('home::home.test_view', ['text' => trans('home::home.hello')]);
+        return view('Home::home.test_view', ['text' => trans('Home::home.hello')]);
     }
 
     function test_insert_model() {

@@ -174,7 +174,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         // HMVC Modules Providers...
-        App\Modules\Home\HomeServiceProvider::class,
+        App\Modules\HMVCServiceProvider::class,
     ],
 
     /*
