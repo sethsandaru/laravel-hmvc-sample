@@ -1,5 +1,5 @@
 # Laravel HMVC Structure - Sample Project
-A sample project, building and using HMVC structure for Laravel 5.x.
+A sample project, building and using HMVC structure for Laravel 5.7+, 6, 7, 8.
 
 ## What is HMVC?
 You can find out here: [HMVC - WIKI](https://en.wikipedia.org/wiki/Hierarchical_model%E2%80%93view%E2%80%93controller)
@@ -7,20 +7,26 @@ You can find out here: [HMVC - WIKI](https://en.wikipedia.org/wiki/Hierarchical_
 Key advantages (M.O.R.E): 
 - Modularization: Reduction of dependencies between the disparate parts of the application.
 - Organization: Having a folder for each of the relevant triads makes for a lighter work load.
-- Reusability: By nature of the design it is easy to reuse nearly every piece of code.
-- Extendibility: Makes the application more extensible without sacrificing ease of maintenance.
+- Usability: By nature of the design it is easy to reuse nearly every piece of code.
+- Extensibility: Makes the application more extensible without sacrificing ease of maintenance.
+
+### Other advantages
+- Able to achieve Microservice with ease. Splitting up the Modules into Services would be blazing fast.
+- In the Project itself it's like a Mono-Repo strategy.
 
 ## Laravel HMVC Structure - this project
-- Top - Base MVC
-- Module 1 MVC
-- Module 2 MVC
-- ...
-- Module n MVC
+- Top - Base MVC - Laravel App
+    - Module 1 MVC - Small Laravel App
+    - Module 2 MVC - Small Laravel App
+    - ...
+    - Module n MVC - Small Laravel App
 
 ## Module Structure
-- Module
+- ModuleName
     - Configs: Your config files here.
-    - Controllers: Your controllers here.
+    - Http:
+        - Controllers: Your controllers here.
+        - Requests
     - Languages: your language files here (translation)
         - en
         - vi
@@ -28,52 +34,42 @@ Key advantages (M.O.R.E):
     - Libraries: your special library classes file here.
     - Models: your models here.
     - Views: your view file here.
-- routes.php: routes of this module.
+    - Routes: all the routes of the module
+        - routes.php: routes of this module.
+    - Services: your service handlers here
+    - Providers: Service Provider
+    - Policies: policies of the module
 
-You don't need to have full structure to work properly. Create the one that you need to use.
+So you can see, a Module is just a small Laravel Application. You don't have to create a full structure to make it work.
+
+The most important part is: `ServiceProvider`. Without that we can't boot up the Module.
 
 ## How to create a new module?
 1. Create your module folder inside `app/Modules`
-2. Inside your module folder, create folder that you need like the structure above (Controllers, Views,...)
-3. Test your module.
+2. Inside your module folder, create folder that you need like the structure above (ServiceProvider, Views,...)
+3. Create a ServiceProvider and register it in `configs/app.php`
+4. Test your module
 
-## How to get (View, Language, Config)?
+## How to access View/Language/Config?
 Module folder name is the alias name to let us load views, language text,...     
-Example: I have **Home** module.
+Example: I have **Home** module. Alias: `home`
 
 ### Load view
 We need to insert module alias in the beginning like this:
 ```php
-return view('Home::home.view', $arrData);
+return view('home::home.view', $arrData);
 ```
 
 ### Get language (translation) text
 ```php
-trans('Home::home.hello'); // Hello
+trans('home::home.hello'); // Hello
+__('home::home.world'); // World
 ```
-
-### Config
-To deal with your own config, we have 2 steps:
-
-#### 1. Create a new config for your module:
-Just create a config file (Laravel format) in `<ModulePath>/Configs`.
-
-#### 2. Register Config
-1. Open `HMVCServiceProvider.php`
-2. In `$configFile` array, add your config file and alias in here:
-```php
-private $configFile = [
-    // alias => config file location/path
-    'homeconfig' => 'Home/Configs/homeconfig.php',
-    
-    // more here
-];
-``` 
 
 #### Get Config Value
 Just like normal config, you can get your config via your alias like this:
 ```php
-config('homeconfig.text'); // get 'text' in homeconfig
+config('home.text'); // get 'text' in home alias
 ```
 
 ## Migrations
@@ -95,9 +91,19 @@ Just create migration file (Laravel format) in `<ModulePath>/Migrations`.
 Note:
 - Filename must be: `yyyy_MM_dd_hhmmss_class_name_here.php` (follow Laravel format)
 
+## Console Command registration
+- Create your command in `app/Modules/<insert_module_name/Console/Commands`
+- Open your module's ServiceProvider, register it in `boot` method like this:
+```php
+$this->commands([
+    MyCommand::class,
+]);
+```
+
+Note: Older Laravel versions might not have this opportunity. The current project is using Laravel 5.7
+
 ## Final
-I'll create a laravel package (console) to create a module later :D
 
 If you got any problems or any questions, feel free to ask me.
 
-Copyright &copy; 2018 by Phat Tran Minh - Seth Phat.
+Copyright &copy; 2018-2021 by Seth Phat.
