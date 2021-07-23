@@ -1,5 +1,7 @@
 <?php
 
+use App\Modules\Home\Providers\HomeServiceProvider;
+
 return [
 
     /*
@@ -173,8 +175,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        // HMVC Modules Providers...
-        App\Modules\HMVCServiceProvider::class,
+        // Module Service Providers...
+        HomeServiceProvider::class,
     ],
 
     /*
